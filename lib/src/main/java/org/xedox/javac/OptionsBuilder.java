@@ -1,13 +1,11 @@
 package org.xedox.javac;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public final class OptionsBuilder {
+    
     private String javaVersion;
     private Path outputDirectory;
     private Path sourceDirectory;
