@@ -48,9 +48,6 @@ Javac compiler = new Javac(
     new PrintWriter(customErrStream)
 );
 
-// Disable System.exit() calls from compiler
-compiler.setSystemExitEnabled(false);
-
 // Compile multiple files
 List<File> sources = Arrays.asList(
     new File("src/Main.java"),
