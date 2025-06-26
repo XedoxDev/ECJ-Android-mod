@@ -2,6 +2,8 @@
 
 A modified version of ECJ (Eclipse Compiler for Java) `3.14.0` adapted for Android development.
 
+**WARNING**: You need to add java.base.jar to classpath, else compiler won't find basic classes (Example: java.lang.Object, java.io.File etc)
+
 ## Key Features
 
 - **Android-compatible**: Removed `Runtime.Version` dependency which isn't available in Android SDK
@@ -16,32 +18,50 @@ A modified version of ECJ (Eclipse Compiler for Java) `3.14.0` adapted for Andro
 
 ```java
 import org.xedox.javac.Javac;
+import org.xedox.javac.JavacOptionsBuilder;
 
 Javac compiler = new Javac();
-boolean success = compiler.compile("-17", "-d", "out/", "src/Main.java");
+boolean success = compiler.compile(
+    JavacOptionsBuilder.create()
+        .release("17")
+        .destination("out/")
+        .classpath("path/to/java.base.jar")
+        .addSrc("src/Main.java")
+        .build()
+);
 ```
 
 ### Using OptionsBuilder
 
 ```java
-import org.xedox.javac.OptionsBuilder;
+import org.xedox.javac.Javac;
+import org.xedox.javac.JavacOptionsBuilder;
 import java.nio.file.Paths;
 
-String[] args = new OptionsBuilder()
-    .withJavaVersion("1.8")
-    .withOutputDirectory(Paths.get("out/"))
-    .withSourceDirectory(Paths.get("src/"))
-    .addClasspath("libs/dependency.jar")
-    .addOption("-Xlint:unchecked")
-    .addSourceFile("src/Main.java")
+String[] args = JavacOptionsBuilder.create()
+    .source("1.8")
+    .target("1.8")
+    .destination(Paths.get("out/"))
+    .sourcepath(Paths.get("src/"))
+    .classpath("libs/dependency.jar")
+    .option("-Xlint:unchecked")
+    .addSrc("src/Main.java")
     .build();
 
+Javac compiler = new Javac();
 boolean success = compiler.compile(args);
 ```
 
 ### Advanced Configuration
 
 ```java
+import org.xedox.javac.Javac;
+import org.xedox.javac.JavacOptionsBuilder;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+
 // Custom output/error handlers
 Javac compiler = new Javac(
     new PrintWriter(customOutStream),
@@ -54,5 +74,12 @@ List<File> sources = Arrays.asList(
     new File("src/Utils.java")
 );
 
-boolean success = compiler.compileFromFiles(sources, additionalOptions);
+boolean success = compiler.compile(
+    JavacOptionsBuilder.create()
+        .release("17")
+        .destination("out/")
+        .classpath("path/to/java.base.jar")
+        .addSrc(sources.stream().map(File::getPath).toList())
+        .build()
+);
 ```
