@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "JavaCompiler Android"
 
-include(":lib")
+include(":javac")
